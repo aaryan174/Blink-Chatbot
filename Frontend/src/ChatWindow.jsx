@@ -30,7 +30,7 @@ const ChatWindow = () => {
   };
 
   try {
-   const response = await fetch("http://localhost:8080/api/auth/home/chat", {
+   const response = await fetch(`${API_BASE_URL}/api/auth/home/chat`, {
      ...options,
      credentials: 'include'
    });
@@ -93,7 +93,7 @@ const toggleSidebar = () => {
 // logout btn
 const handleLogout = async () => {
   try {
-    await axios.post("http://localhost:8080/api/auth/logout", {}, { withCredentials: true });
+    await axios.post(`${API_BASE_URL}/api/auth/logout`, {}, { withCredentials: true });
     navigate("/login");
   } catch (error) {
     console.error("Error logging out:", error);

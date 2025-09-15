@@ -16,7 +16,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/register",
+        `${API_BASE_URL}/api/auth/register`,
         {
           name: name,
           email: email,

@@ -20,7 +20,7 @@ const SideBar = () => {
   // render all threads
   const getAllThreads = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/auth/home/threads", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/home/threads`, {
         credentials: 'include'
       });
       const res = await response.json();
@@ -52,7 +52,7 @@ const SideBar = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/auth/home/threads/${newThreadId}`, {
+        `${API_BASE_URL}/api/auth/home/threads/${newThreadId}`, {
           credentials: 'include'
         }
       );
@@ -74,7 +74,7 @@ const SideBar = () => {
 
   const deleteThread = async(threadId) => {
     try {
-    const response = await fetch(`http://localhost:8080/api/auth/home/threads/${threadId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/home/threads/${threadId}`, {
       method: "DELETE",
       credentials: 'include'
     });
