@@ -46,13 +46,9 @@ const Register = () => {
             Create your account
           </h1>
           <p className="auth-subtitle">
-            Join to explore and enjoy delicious meals.
+            Join to explore the Blink.
           </p>
         </header>
-        <nav className="auth-alt-action" style={{ marginTop: "-4px" }}>
-          <strong style={{ fontWeight: 600 }}>Switch:</strong>{" "}
-          <Link to="/register">User</Link> •{" "}
-        </nav>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="two-col">
             <div className="field-group">
