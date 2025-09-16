@@ -14,7 +14,7 @@ const PORT = 8080;
 
 // CORS configuration
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "https://blink-frontend.onrender.com"],
+    origin: ["http://localhost:5173", "http://localhost:5174", "https://blink-frontend.onrender.com", "https://blink-chatbot-three.vercel.app"],
     credentials: true
 }));
 
