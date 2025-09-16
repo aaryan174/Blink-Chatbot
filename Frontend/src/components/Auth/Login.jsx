@@ -2,6 +2,8 @@ import React from 'react';
 import '../auth-css/auth-shared.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const Login = () => {
 
@@ -29,7 +31,7 @@ const Login = () => {
       <div className="auth-card" role="region" aria-labelledby="user-login-title">
         <header>
           <h1 id="user-login-title" className="auth-title">Welcome back</h1>
-          <p className="auth-subtitle">Sign in to continue your food journey.</p>
+          <p className="auth-subtitle">Sign in to continue your Surfing.</p>
         </header>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="field-group">
