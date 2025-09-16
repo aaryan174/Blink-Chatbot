@@ -3,11 +3,10 @@ import getGeminiApiResponse from "../utils/GoogleGemini.js";
 
 export async function getAllThreads(req, res) {
   try {
-    // Only get threads for the authenticated user
-    const threads = await Threads.find({ user: req.user._id }).sort({ UpdatedAtTime: -1 });
+    const threads = await Threads.find({ user: req.user._id }).sort({ updatedAt: -1 }); 
     return res.json(threads);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching threads:", error);
     return res.status(500).json({ error: "Failed to fetch threads" });
   }
 }
@@ -15,12 +14,17 @@ export async function getAllThreads(req, res) {
 export async function getChatHistory(req, res) {
   const { threadId } = req.params;
   try {
-    // Only get thread if it belongs to the authenticated user
     const thread = await Threads.findOne({ ThreadId: threadId, user: req.user._id });
     if (!thread) return res.status(404).json({ error: "Thread not found" });
-    return res.json(thread.Message);
+    
+    const safeMessages = thread.Message.map(msg => ({
+      Role: msg.Role,
+      Content: msg.Content.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    }));
+
+    return res.json(safeMessages);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching chat history:", error);
     return res.status(500).json({ error: "Failed to fetch thread chats" });
   }
 }
