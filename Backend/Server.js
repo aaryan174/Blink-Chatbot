@@ -12,6 +12,18 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 const PORT = 8080;
 
+
+// Handle preflight requests for all routes
+app.options('*', cors({
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://blink-frontend.onrender.com",
+        "https://blink-chatbot-three.vercel.app"
+    ],
+    credentials: true
+}));
+
 // CORS configuration
 app.use(cors({
     origin: ["http://localhost:5173", "http://localhost:5174", "https://blink-frontend.onrender.com", "https://blink-chatbot-three.vercel.app"],
