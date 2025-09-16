@@ -27,6 +27,7 @@ export async function registerUser(req, res) {
     secure: process.env.NODE_ENV === "production", 
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     domain: process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000 
   });
 
@@ -63,6 +64,7 @@ export async function loginUser(req, res) {
     secure: process.env.NODE_ENV === "production", 
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     domain: process.env.NODE_ENV === "production" ? ".onrender.com" : undefined, 
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000 
   });
 
@@ -83,6 +85,7 @@ export function logoutUser(req, res) {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     domain: process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
+    path: '/',
   });
   res.status(200).json({ message: "user logged out successfully" });
 }
