@@ -13,11 +13,26 @@ const app = express();
 const PORT = 8080;
 
 // CORS configuration
-app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "https://blink-chatbot-blond.vercel.app/"],
-    credentials: true
-}));
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://blink-chatbot-blond.vercel.app" // Your live Vercel URL
+];
 
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth/home", chatRoutes);
