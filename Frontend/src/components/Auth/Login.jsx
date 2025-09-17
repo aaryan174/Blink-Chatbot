@@ -31,7 +31,7 @@ const Login = () => {
       <div className="auth-card" role="region" aria-labelledby="user-login-title">
         <header>
           <h1 id="user-login-title" className="auth-title">Welcome back</h1>
-          <p className="auth-subtitle">Sign in to continue your Surfing.</p>
+          <p className="auth-subtitle">Sign in to continue your surfing.</p>
         </header>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="field-group">
