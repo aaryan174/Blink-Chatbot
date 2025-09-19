@@ -16,6 +16,7 @@ const PORT = 8080;
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://blink-chatbot-ten.vercel.app/"
 ];
 
 const corsOptions = {
