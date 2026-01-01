@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from "react";
 import "./Sidebar.css";
 import { MyContext } from "./MyContext";
 import { v1 as uuidv1 } from "uuid";
-import { useNavigate } from "react-router-dom"; // Make sure to import useNavigate
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,32 +19,19 @@ const SideBar = () => {
     setSidebarOpen,
   } = useContext(MyContext);
 
-  const navigate = useNavigate(); // Initialize useNavigate
-
   // render all threads
   const getAllThreads = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/home/threads`, {
-        credentials: 'include'
-      });
+      const response = await fetch(`${API_BASE_URL}/api/home/threads`);
 
-      // --- Start of Correction ---
-
-      // 1. Check if the server responded with an error (e.g., 400, 401)
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Failed to fetch threads:", errorData.message);
-        
-        // If there's an authentication error, redirect to the login page
-        if (response.status === 400 || response.status === 404) {
-          navigate("/login");
-        }
-        return; // Stop the function from continuing
+        return;
       }
 
       const res = await response.json();
 
-      // 2. Make sure the response is an array before you map over it
       if (Array.isArray(res)) {
         const filteredData = res.map((thread) => ({
           threadId: thread.ThreadId,
@@ -54,10 +40,8 @@ const SideBar = () => {
         setAllThreads(filteredData);
       } else {
         console.error("Received data is not an array:", res);
-        setAllThreads([]); // Default to an empty array to prevent errors
+        setAllThreads([]);
       }
-
-      // --- End of Correction ---
 
     } catch (error) {
       console.error("An error occurred while fetching threads:", error);
@@ -82,9 +66,7 @@ const SideBar = () => {
     setCurrThreadId(newThreadId);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/auth/home/threads/${newThreadId}`, {
-          credentials: 'include'
-        }
+        `${API_BASE_URL}/api/home/threads/${newThreadId}`
       );
       const res = await response.json();
       setPrevChats(res);
@@ -102,9 +84,8 @@ const SideBar = () => {
   // delete history functionality
   const deleteThread = async(threadId) => {
     try {
-      await fetch(`${API_BASE_URL}/api/auth/home/threads/${threadId}`, {
-        method: "DELETE",
-        credentials: 'include'
+      await fetch(`${API_BASE_URL}/api/home/threads/${threadId}`, {
+        method: "DELETE"
       });
       
       setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId)); 

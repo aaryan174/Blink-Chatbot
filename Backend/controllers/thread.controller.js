@@ -3,7 +3,7 @@ import getGeminiApiResponse from "../utils/GoogleGemini.js";
 
 export async function getAllThreads(req, res) {
   try {
-    const threads = await Threads.find({ user: req.user._id }).sort({ updatedAt: -1 }); 
+    const threads = await Threads.find().sort({ updatedAt: -1 }); 
     return res.json(threads);
   } catch (error) {
     console.error("Error fetching threads:", error);
@@ -14,7 +14,7 @@ export async function getAllThreads(req, res) {
 export async function getChatHistory(req, res) {
   const { threadId } = req.params;
   try {
-    const thread = await Threads.findOne({ ThreadId: threadId, user: req.user._id });
+    const thread = await Threads.findOne({ ThreadId: threadId });
     if (!thread) return res.status(404).json({ error: "Thread not found" });
     
     const safeMessages = thread.Message.map(msg => ({
@@ -32,8 +32,7 @@ export async function getChatHistory(req, res) {
 export async function deleteChat(req, res) {
   const { threadId } = req.params;
   try {
-    // Only delete thread if it belongs to the authenticated user
-    const deletedThread = await Threads.findOneAndDelete({ ThreadId: threadId, user: req.user._id });
+    const deletedThread = await Threads.findOneAndDelete({ ThreadId: threadId });
     if (!deletedThread) return res.status(404).json({ error: "Thread not found" });
     return res.status(200).json({ success: "Thread deleted successfully" });
   } catch (error) {
@@ -47,15 +46,13 @@ export async function chatRoute(req, res) {
   if (!ThreadId || !Message) return res.status(400).json({ error: "Missing required fields" });
 
   try {
-    // Only find threads that belong to the authenticated user
-    let thread = await Threads.findOne({ ThreadId, user: req.user._id });
+    let thread = await Threads.findOne({ ThreadId });
 
     if (!thread) {
       thread = new Threads({
         ThreadId,
         Title: Message,
         Message: [{ Role: "user", Content: Message }],
-        user: req.user._id, // Associate thread with user
       });
     } else {
       thread.Message.push({ Role: "user", Content: Message });
@@ -66,8 +63,21 @@ export async function chatRoute(req, res) {
       modelReply = await getGeminiApiResponse(Message);
     } catch (geminiError) {
       console.error("Gemini API failed, using fallback:", geminiError);
-      // Fallback response when Gemini API is not available
-      modelReply = "I'm sorry, I'm having trouble connecting to the AI service right now. Please make sure the GEMINI_API_KEY is properly configured in the environment variables. You can still use the chat interface, but AI responses are temporarily unavailable.";
+      
+      // Provide more specific error messages
+      let errorMessage = "I'm sorry, I'm having trouble connecting to the AI service right now.";
+      
+      if (geminiError.message.includes("Quota exceeded") || geminiError.message.includes("billing")) {
+        errorMessage = "⚠️ Quota exceeded. Google requires a billing account to be linked for free tier access (no charges for free usage). Please link a billing account at: https://console.cloud.google.com/billing";
+      } else if (geminiError.message.includes("API key") || geminiError.message.includes("Invalid")) {
+        errorMessage = "⚠️ API key issue. Please check your GEMINI_API_KEY in the .env file.";
+      } else if (geminiError.message.includes("not found")) {
+        errorMessage = "⚠️ Model not found. Please check the GEMINI_MODEL in your .env file.";
+      } else {
+        errorMessage = `⚠️ ${geminiError.message}`;
+      }
+      
+      modelReply = errorMessage;
     }
     
     thread.Message.push({ Role: "model", Content: modelReply });

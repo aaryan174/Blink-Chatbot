@@ -1,6 +1,5 @@
 import express from "express";
 import Threads from "../models/Threads.js";
-import userAuthMiddleware from "../middleware/Auth.middleware.js";
 import { chatRoute, deleteChat, getAllThreads, getChatHistory } from "../controllers/thread.controller.js";
 
 
@@ -24,16 +23,16 @@ router.post("/test", async (req, res) => {
 });
 
 // get all threads
-router.get("/threads", userAuthMiddleware, getAllThreads)
+router.get("/threads", getAllThreads)
 
 // get chat history in thread
-router.get("/threads/:threadId", userAuthMiddleware, getChatHistory);
+router.get("/threads/:threadId", getChatHistory);
 
 // delete thread history
-router.delete("/threads/:threadId", userAuthMiddleware, deleteChat);
+router.delete("/threads/:threadId", deleteChat);
 
 // chat route
-router.post("/chat", userAuthMiddleware, chatRoute);
+router.post("/chat", chatRoute);
 
 
 export default router;

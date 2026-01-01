@@ -4,8 +4,6 @@ import "./App.css";
 import "./ChatWindow.css";
 import { MyContext } from "./MyContext";
 import {SyncLoader} from "react-spinners"
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
@@ -14,8 +12,7 @@ const ChatWindow = () => {
 
   const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat, sidebarOpen, setSidebarOpen } = useContext(MyContext);
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); //set defult at false
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
  const getReply = async() => {
   setLoading(true);
@@ -32,10 +29,7 @@ const ChatWindow = () => {
   };
 
   try {
-   const response = await fetch(`${API_BASE_URL}/api/auth/home/chat`, {
-     ...options,
-     credentials: 'include'
-   });
+   const response = await fetch(`${API_BASE_URL}/api/home/chat`, options);
   const res =  await response.json();
   setReply(res.reply);
    console.log(res);
@@ -87,22 +81,6 @@ const toggleSidebar = () => {
   setSidebarOpen(!sidebarOpen);
 };
 
-// login btn 
- const goToLogin = () => {
-    navigate("/login"); 
-  };
-
-// logout btn
-const handleLogout = async () => {
-  try {
-    await axios.post(`${API_BASE_URL}/api/auth/logout`, {}, { withCredentials: true });
-    navigate("/login");
-  } catch (error) {
-    console.error("Error logging out:", error);
-    // Even if logout fails on server, redirect to login
-    navigate("/login");
-  }
-};
 
   return (
     <div className="chatwindow">
@@ -125,8 +103,6 @@ const handleLogout = async () => {
         isOpen && 
         <div className="dropDown">
         <div className="dropDownItems"> <i className="fa-solid fa-gear"></i> Settings</div>
-        <div className="dropDownItems" onClick={goToLogin}> <i className="fa-solid fa-arrow-right-to-bracket"></i> Login</div>
-        <div className="dropDownItems" onClick={handleLogout}> <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
         </div>
       }
       <Chatdiv />

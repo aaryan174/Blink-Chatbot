@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 
 import chatRoutes from "./routes/chat.js";
-import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 
@@ -33,12 +32,21 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-app.use("/api/auth/home", chatRoutes);
-app.use("/api/auth", userRoutes);
+app.use("/api/home", chatRoutes);
 
 // Default route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
+});
+
+// Debug route to check environment variables (remove in production)
+app.get("/api/debug/env", (req, res) => {
+  res.json({
+    hasGeminiKey: !!process.env.GEMINI_API_KEY,
+    geminiKeyLength: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.length : 0,
+    hasMongoUrl: !!process.env.MONGODB_URL,
+    port: process.env.PORT || 8080
+  });
 });
 
 // MongoDB connection
@@ -51,6 +59,14 @@ const connectDB = async () => {
   }
 };
 connectDB();
+
+// Start server for local development
+const PORT = process.env.PORT || 8080;
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  });
+}
 
 // ✅ Export app for Vercel
 export default app;

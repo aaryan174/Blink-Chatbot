@@ -37,11 +37,6 @@ const ThreadSchema = new mongoose.Schema({
     UpdatedAtTime:{
         type: Date,
         default: Date.now
-    },
-    user:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
     }
 });
 
